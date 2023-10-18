@@ -339,12 +339,12 @@ func _createKeyboard(layoutData):
 				_setKeyStyle("pressed",newKey, stylePressed)
 					
 				if font != null:
-					newKey.set('custom_fonts/font', font)
+					newKey.set('theme_override_fonts/font', font)
 				if fontColorNormal != null:
-					newKey.set('custom_colors/font_color', fontColorNormal)
-					newKey.set('custom_colors/font_color_hover', fontColorHover)
-					newKey.set('custom_colors/font_color_pressed', fontColorPressed)
-					newKey.set('custom_colors/font_color_disabled', fontColorNormal)
+					newKey.set('theme_override_colors/font_color', fontColorNormal)
+					newKey.set('theme_override_colors/font_hover_color', fontColorHover)
+					newKey.set('theme_override_colors/font_pressed_color', fontColorPressed)
+					newKey.set('theme_override_colors/font_disabled_color', fontColorNormal)
 					
 				newKey.released.connect(_keyReleased)
 				
