@@ -8,6 +8,7 @@ extends PanelContainer
 
 @export var autoShow:bool = true
 @export_file var customLayoutFile
+@export var setToolTip := true
 @export_group("Style")
 var styleBackground:StyleBoxFlat = null
 @export var background:StyleBoxFlat = null:
@@ -183,7 +184,7 @@ var currentLayout = null
 
 func setActiveLayoutByName(name):
 	for layout in layouts:
-		if layout.tooltip_text == str(name):
+		if layout.get_meta("layout_name") == str(name):
 			_showLayout(layout)
 		else:
 			_hideLayout(layout)
@@ -209,7 +210,7 @@ func _switchLayout(keyData):
 			return
 	
 	for layout in layouts:
-		if layout.tooltip_text == keyData.get("layout-name"):
+		if layout.get_meta("layout_name") == keyData.get("layout-name"):
 			_showLayout(layout)
 			return
 	
@@ -317,7 +318,10 @@ func _createKeyboard(layoutData):
 		else:
 			currentLayout = layoutContainer
 		
-		layoutContainer.tooltip_text = layout.get("name")
+		var layout_name = layout.get("name")
+		layoutContainer.set_meta("layout_name", layout_name)
+		if setToolTip:
+			layoutContainer.tooltip_text = layout_name
 		layouts.push_back(layoutContainer)
 		add_child(layoutContainer)
 		
