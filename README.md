@@ -1,7 +1,7 @@
-![Screenshot](addons/onscreenkeyboard/Screenshot.png "Screenshot")
+![Screenshot](Screenshot.png "Screenshot")
 
 # Usage
-Onscreen Keyboard Plugin for Godot Engine. Displayed as soon as LineEdit or TextEdit are in focus.
+Onscreen keyboard for godot. Displayed as soon as LineEdit or TextEdit are in focus.
 
 # Installation
 
@@ -18,6 +18,11 @@ You can find some layouts inside plugin/customize/keyboardLayouts.
 !Dont forget to add *.json to your export resources. -> Export -> Resources -> Filters to export non-resource ...
 
 # Create key-layouts
+
+## Assisted creation in gdscript
+
+The function `make_row([], "", [])` which can be inherited from `KeyboardLayout` (`keyboard_layout.gd`) generates a row semi-automatically. The second argument is a string of symbols, such as "qwertyuiop[]" or "asdfghjkl;'\".
+To the left and right of these symbols you can add custom special keys using the other arguments. 
 
 ## Key values
 
@@ -37,6 +42,7 @@ all usable output-values can be found in keylist.gd
 	"display-uppercase": "E"
 }
 ```
+Since the creation of these is repetitive the function `generate_character_data()` can take care of that. You can even generate data for a string of characters with `generate_characters_data()`. These functions are also used by `make_row()`.
 
 #### type: special
 applies optional custom-style for special-keys (see: set custom key-layouts)
@@ -180,5 +186,4 @@ A file can define multiple layouts. Each layout is defined by rows and key value
 		}
 	]
 }
-			
 ```
