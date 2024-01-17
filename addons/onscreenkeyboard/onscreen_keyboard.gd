@@ -10,7 +10,7 @@ extends PanelContainer
 @export_file var customLayoutFile
 @export var setToolTip := true
 @export_group("Style")
-@export var separation:Vector2 = Vector2(0,0)
+@export var separation:Vector2i = Vector2i(0,0)
 var styleBackground:StyleBoxFlat = null
 @export var background:StyleBoxFlat = null:
 	set(new_val):
