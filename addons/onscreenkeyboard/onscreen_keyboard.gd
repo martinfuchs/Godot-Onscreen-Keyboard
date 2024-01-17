@@ -10,6 +10,7 @@ extends PanelContainer
 @export_file var customLayoutFile
 @export var setToolTip := true
 @export_group("Style")
+@export var separation:Vector2 = Vector2(0,0)
 var styleBackground:StyleBoxFlat = null
 @export var background:StyleBoxFlat = null:
 	set(new_val):
@@ -328,12 +329,15 @@ func _createKeyboard(layoutData):
 		var baseVbox = VBoxContainer.new()
 		baseVbox.size_flags_horizontal = SIZE_EXPAND_FILL
 		baseVbox.size_flags_vertical = SIZE_EXPAND_FILL
+		# theme override for spacing
+		baseVbox.add_theme_constant_override("separation", separation.y)
 		
 		for row in layout.get("rows"):
 
 			var keyRow = HBoxContainer.new()
 			keyRow.size_flags_horizontal = SIZE_EXPAND_FILL
 			keyRow.size_flags_vertical = SIZE_EXPAND_FILL
+			keyRow.add_theme_constant_override("separation", separation.x)
 			
 			for key in row.get("keys"):
 				var newKey = KeyboardButton.new(key)
