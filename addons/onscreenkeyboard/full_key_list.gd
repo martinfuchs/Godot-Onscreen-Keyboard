@@ -4,7 +4,7 @@ enum FullKeyList {
 	KEY_TAB = 16777218,
 	KEY_BACKTAB = 16777219,
 	KEY_BACKSPACE = 4194308,	# For backspace and enter the actual keycode is
-	KEY_ENTER = 4194310,			# not the one the one listed in the godot Keylist.
+	KEY_ENTER = 4194309,
 	KEY_KP_ENTER = 16777222,
 	KEY_INSERT = 16777223,
 	KEY_DELETE = 16777224,
