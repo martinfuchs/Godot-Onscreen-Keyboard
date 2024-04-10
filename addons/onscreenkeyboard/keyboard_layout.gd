@@ -4,6 +4,7 @@ extends Node
 
 var data:Dictionary = {}
 
+
 func generate_character_data(char:String) -> Dictionary:
 	if char == "":
 		return {}
@@ -19,6 +20,7 @@ func generate_character_data(char:String) -> Dictionary:
 		data["display-uppercase"] = char
 	return data
 
+
 func generate_characters_data(chars:String) -> Array:
 	var keys = []
 	for char in chars.split(""):
@@ -27,10 +29,12 @@ func generate_characters_data(chars:String) -> Array:
 			keys.append(data)
 	return keys
 
+
 func set_special(keys):
 	for key in keys:
 		if !("type" in key):
 			key["type"] = "special"
+
 
 func make_row(left_special_keys: Array, chars: String, right_special_keys: Array):
 	set_special(left_special_keys)

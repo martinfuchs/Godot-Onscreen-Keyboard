@@ -48,6 +48,7 @@ var styleSpecialKeys:StyleBoxFlat = null
 		return styleSpecialKeys
 @export_group("Font")
 @export var font:FontFile
+@export var fontsize:int = 20
 @export var fontColorNormal:Color = Color(1,1,1)
 @export var fontColorHover:Color = Color(1,1,1)
 @export var fontColorPressed:Color = Color(1,1,1)
@@ -77,6 +78,7 @@ func _enter_tree():
 func _input(event):
 	_updateAutoDisplayOnInput(event)
 
+
 func size_changed():
 	if autoShow:
 		_hideKeyboard()
@@ -97,12 +99,12 @@ var tweenPosition
 var tweenSpeed = .2
 
 func _initKeyboard():
-
 	if customLayoutFile == null:
 		var defaultLayout = preload("default_layout.gd").new()
 		_createKeyboard(defaultLayout.data)
 	else:
 		_createKeyboard(_loadJSON(customLayoutFile))
+	
 	if autoShow:
 		_hideKeyboard()
 
@@ -132,9 +134,7 @@ func _updateAutoDisplayOnInput(event):
 		var focusObject = get_viewport().gui_get_focus_owner()
 		if focusObject != null:
 			var clickOnInput = Rect2(focusObject.global_position,focusObject.size).has_point(get_global_mouse_position())
-			var clickOnKeyboard = Rect2(global_position,size).has_point(
-				get_global_mouse_position()
-			)
+			var clickOnKeyboard = Rect2(global_position,size).has_point(get_global_mouse_position())
 			
 			if clickOnInput:
 				if isKeyboardFocusObject(focusObject):
@@ -143,12 +143,13 @@ func _updateAutoDisplayOnInput(event):
 				_showKeyboard()
 			else:
 				_hideKeyboard()
-					
+	
 	if event is InputEventKey:
 		var focusObject = get_viewport().gui_get_focus_owner()
 		if focusObject != null:
 			if event.keycode == KEY_ENTER:
 				if isKeyboardFocusObjectCompleteOnEnter(focusObject):
+					focusObject.release_focus()
 					_hideKeyboard()
 
 
@@ -190,12 +191,15 @@ func setActiveLayoutByName(name):
 		else:
 			_hideLayout(layout)
 
+
 func _showLayout(layout):
 	layout.show()
 	currentLayout = layout
-	
+
+
 func _hideLayout(layout):
 	layout.hide()
+
 
 func _switchLayout(keyData):	
 	prevPrevLayout = previousLayout
@@ -216,7 +220,7 @@ func _switchLayout(keyData):
 			return
 	
 	_setCapsLock(false)
-	
+
 
 ###########################
 ## KEY EVENTS
@@ -256,21 +260,15 @@ func _keyReleased(keyData):
 		inputEventKey.ctrl_pressed = false
 		inputEventKey.pressed = true
 
-		var keyUnicode = KeyListHandler.getUnicodeFromString(keyValue)
-		if !uppercase && KeyListHandler.hasLowercase(keyUnicode):
-			keyUnicode +=32
-		inputEventKey.keycode = keyUnicode
-		inputEventKey.unicode = keyUnicode
-#		inputEventKey.keycode = keyUnicode #KeyListHandler.getScancodeFromString(keyValue)
+		var key = KeyListHandler.getKeyFromString(keyValue)
+		if !uppercase && KeyListHandler.hasLowercase(keyValue):
+			key +=32
 		
-		# ?? to be checked for other-than-monkey-patch-alternatives by MF 
-#		if keyData.type == "special" or inputEventKey.unicode == KEY_SPACE:
-#			inputEventKey.keycode = keyUnicode
-#		print(inputEventKey.unicode)
+		inputEventKey.keycode = key
+		inputEventKey.unicode = key
 
 		Input.parse_input_event(inputEventKey)
-		
-		
+	
 		###########################
 		## DISABLE CAPSLOCK AFTER 
 		###########################
@@ -284,6 +282,7 @@ func _keyReleased(keyData):
 func _setKeyStyle(styleName:String, key: Control, style:StyleBoxFlat):
 	if style != null:
 		key.add_theme_stylebox_override(styleName, style)
+
 
 func _createKeyboard(layoutData):
 	if layoutData == null:
@@ -333,7 +332,7 @@ func _createKeyboard(layoutData):
 		baseVbox.add_theme_constant_override("separation", separation.y)
 		
 		for row in layout.get("rows"):
-
+			
 			var keyRow = HBoxContainer.new()
 			keyRow.size_flags_horizontal = SIZE_EXPAND_FILL
 			keyRow.size_flags_vertical = SIZE_EXPAND_FILL
@@ -345,7 +344,8 @@ func _createKeyboard(layoutData):
 				_setKeyStyle("normal",newKey, styleNormal)
 				_setKeyStyle("hover",newKey, styleHover)
 				_setKeyStyle("pressed",newKey, stylePressed)
-					
+				
+				newKey.set('theme_override_font_sizes/font_size', fontsize)
 				if font != null:
 					newKey.set('theme_override_fonts/font', font)
 				if fontColorNormal != null:
