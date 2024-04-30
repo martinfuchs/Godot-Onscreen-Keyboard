@@ -10,7 +10,7 @@ extends Node
 # create entry with new name and reuse this name in your keyboard layout .json
 # ##########
 
-var keyList = {
+var key_list = {
 	"Escape":KEY_ESCAPE,
 	"Tab":KEY_TAB,
 	#"Shift-Tab":16777219,
@@ -260,7 +260,7 @@ var keyList = {
 # this list defines all lowercase-valid characters
 # ##########
 
-var keyArrayLowercase = [
+var key_array_lowercase = [
 	"A",
 	"B",
 	"C",
@@ -319,18 +319,18 @@ var keyArrayLowercase = [
 ]
 
 
-func hasLowercase(name):
-	for key in keyArrayLowercase:
+func has_lowercase(name):
+	for key in key_array_lowercase:
 		if key == name:
 			return true
 	return false
 
 
-func getKeyFromString(name, debug=false):
-	if keyList.has(str(name)):
+func get_key_from_string(name, debug=false):
+	if key_list.has(str(name)):
 		if debug:
 			print("Scancode OK:"+name)
-		return keyList.get(str(name))
+		return key_list.get(str(name))
 	else:
 		if debug:
 			print("Scancode Key not found:"+ name)
