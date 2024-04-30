@@ -8,7 +8,6 @@ extends PanelContainer
 
 @export var autoShow:bool = true
 @export var animate:bool = true
-@export var autoPosition:bool = true
 
 @export_file var customLayoutFile
 @export var setToolTip := true
@@ -101,7 +100,7 @@ var uppercase = false
 var tweenPosition
 var tweenSpeed = .2
 
-var startPosition = Vector2()
+var hidePosition = Vector2()
 
 func _initKeyboard():
 	if customLayoutFile == null:
@@ -111,14 +110,13 @@ func _initKeyboard():
 		_createKeyboard(_loadJSON(customLayoutFile))
 	
 	# init positioning without animation
-	if autoPosition:
-		var tmp_anim = animate
-		animate = false
-		if autoShow and visible:
-			_hideKeyboard()
-		elif visible:
-			_showKeyboard()
-		animate = tmp_anim
+	var tmp_anim = animate
+	animate = false
+	if visible:
+		_hideKeyboard()
+	elif visible:
+		_showKeyboard()
+	animate = tmp_anim
 		
 
 ###########################
@@ -164,52 +162,40 @@ func _updateAutoDisplayOnInput(event):
 					focusObject.release_focus()
 					_hideKeyboard()
 
-
+					
 func _hideKeyboard(keyData=null):
-	# save start position to tween back to last visible position
-	startPosition = position
-	
-	# hide 
-	var new_y_position = get_viewport().get_visible_rect().size.y + 10
-	if animate == false:
-		position.y = new_y_position
-		changeVisibility(false)
+	if animate:
+		var newYPos = get_viewport().get_visible_rect().size.y + 10
+		animatePosition(Vector2(position.x,newYPos),true)
 	else:
-		var tween = get_tree().create_tween()		
-		tween.finished.connect(changeVisibility.bind(false))
-		tween.tween_property(
-			self,"position",
-			Vector2(position.x,new_y_position),
-			tweenSpeed
-		).set_trans(Tween.TRANS_SINE)
+		changeVisibility(false)
 	
-
+		
 func _showKeyboard(keyData=null):
 	changeVisibility(true)
-	
-	var new_y_position = get_viewport().get_visible_rect().size.y-size.y
-	if autoPosition == false:
-		# tween back to last visible position
-		new_y_position = startPosition.y
+	if animate:
+		var newYPos = get_viewport().get_visible_rect().size.y-size.y
+		animatePosition(Vector2(position.x,newYPos))
+		
+		
+func animatePosition(newPosition, triggerVisibility:bool=false):
+	var tween = get_tree().create_tween()
+	if triggerVisibility:
+		tween.finished.connect(changeVisibility.bind(!visible))
+	tween.tween_property(
+		self,"position",
+		Vector2(newPosition),
+		tweenSpeed
+	).set_trans(Tween.TRANS_SINE)
 
-	if animate == false:
-		position.y = new_y_position
-	else:
-		var tween = get_tree().create_tween()
-		tween.tween_property(
-			self,"position",
-			Vector2(position.x,new_y_position),
-			tweenSpeed
-		).set_trans(Tween.TRANS_SINE)
 
-	
 func changeVisibility(value):
+	print("change visib"+str(value))
 	if value:
 		super.show()
 	else:
 		_setCapsLock(false)
 		super.hide()
-
 	visibilityChanged.emit(value)
 	
 	
